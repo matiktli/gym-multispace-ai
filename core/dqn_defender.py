@@ -16,6 +16,7 @@ initial_observation = env.reset()
 # Initialise model
 obs_space_shape = env.observation_space[0].shape
 act_space_shape = env.action_space[0].n
+
 print(obs_space_shape, '\n\n', act_space_shape)
 dqn_model = base_dqn_model(obs_space_shape, act_space_shape)
 
