@@ -249,6 +249,7 @@ class DQNAgent(AbstractDQNAgent):
         self.target_model.set_weights(self.model.get_weights())
 
     def forward(self, observation):
+        print('obs: ', observation)
         # Select an action.
         state = self.memory.get_recent_state(observation)
         q_values = self.compute_q_values(state)

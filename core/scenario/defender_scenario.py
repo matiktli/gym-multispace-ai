@@ -82,4 +82,4 @@ class Scenario(BaseScenario):
         print(f'GETTING OBS FOR AGENT: {agent.uuid}.')
         # Simple observation of all agents position
         obs = [ag.state.pos for ag in world.objects_all]
-        return obs
+        return np.concatenate(obs)
