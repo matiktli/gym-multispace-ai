@@ -79,6 +79,7 @@ class Scenario(BaseScenario):
             raise Exception('Wrong agent definition')
 
     def get_observation(self, agent, world):
+        print(f'GETTING OBS FOR AGENT: {agent.uuid}.')
         # Simple observation of all agents position
         obs = [ag.state.pos for ag in world.objects_all]
         return obs
