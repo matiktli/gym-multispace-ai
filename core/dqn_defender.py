@@ -25,10 +25,11 @@ dqn_model = base_dqn_model(obs_space_shape, act_space_shape)
 # Build keras-rl custom agent
 dqn_agent = base_dqn_agent(dqn_model, act_space_shape)
 
-dqn_agent.fit(env, nb_steps=100, visualize=False, verbose=2)
+dqn_agent.fit(env, nb_steps=50000, visualize=False, verbose=2)
 
 # After training is done, we save the final weights.
 dqn_agent.save_weights('dqn_{}_weights.h5f'.format(0), overwrite=True)
 
 # Finally, evaluate our algorithm for 5 episodes.
+input('press to visualize')
 dqn_agent.test(env, nb_episodes=5, visualize=True)

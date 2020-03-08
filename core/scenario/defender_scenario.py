@@ -46,6 +46,7 @@ class Scenario(BaseScenario):
 
         return world
 
+    # reset callback function
     def reset_world(self, world):
         print('RESETING WORLD')
         center_p = tuple([x / 2 for x in world.state.size])
@@ -62,6 +63,7 @@ class Scenario(BaseScenario):
         world.special_objects[0].state.pos = (
             world.state.size[0] - 2, random.randrange(0, world.state.size[1]))
 
+    # reward callback function
     def get_reward(self, agent, world):
         if agent.uuid == 'a_0_attacker':
             # Attacker reward is based on distance to the target entity (negative reward)
@@ -78,8 +80,13 @@ class Scenario(BaseScenario):
         else:
             raise Exception('Wrong agent definition')
 
+    # observation callback function
     def get_observation(self, agent, world):
         print(f'GETTING OBS FOR AGENT: {agent.uuid}.')
         # Simple observation of all agents position
         obs = [ag.state.pos for ag in world.objects_all]
         return np.concatenate(obs)
+
+    # done callback function
+    def is_done(self, agent, world):
+        return False
