@@ -119,7 +119,7 @@ class DQNAgent(AbstractDQNAgent):
                  dueling_type='avg', *args, **kwargs):
         super(DQNAgent, self).__init__(*args, **kwargs)
 
-        # Validate (important) input. //TODO-mati EDITED from `output`
+        # Validate (important) input.
         if hasattr(model.outputs, '__len__') and len(model.outputs) > 1:
             raise ValueError(
                 'Model "{}" has more than one output. DQN expects a model that has a single output.'.format(model))

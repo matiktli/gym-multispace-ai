@@ -9,8 +9,9 @@ from keras.layers import Dense, Activation, Flatten
 
 
 def base_dqn_model(input_shape, output_shape):
+    input_shape = (1,) + input_shape
     model = Sequential()
-    model.add(Flatten(input_shape=(1,) + input_shape))
+    model.add(Flatten(input_shape=input_shape))
     model.add(Dense(16))
     model.add(Activation('relu'))
     model.add(Dense(16))
@@ -20,4 +21,5 @@ def base_dqn_model(input_shape, output_shape):
     model.add(Dense(output_shape))
     model.add(Activation('linear'))
     print(model.summary())
+    print(f'Input shape: {input_shape}')
     return model
