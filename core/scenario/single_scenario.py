@@ -66,8 +66,6 @@ class Scenario(BaseScenario):
 
     # done callback function
     def is_done(self, agent, world):
-        print(f'Step: {world.step_counter}')
         if world.step_counter > 100:
-            input('....')
             return True
         return False

@@ -48,7 +48,7 @@ class DQNAgentSolver():
 
     def make_decission(self, state):
         # Add exploration parameter
-        if np.random.rand() < self.exploration_rate:
+        if np.random.randint(1, 100)/100 < self.exploration_rate:
             result = random.randrange(self.action_space)
         else:
             state = np.reshape(state, (1, 1, 4))

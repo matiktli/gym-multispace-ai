@@ -420,7 +420,6 @@ class NAFLayer(Layer):
         super(NAFLayer, self).__init__(**kwargs)
 
     def call(self, x, mask=None):
-        # TODO: validate input shape
 
         assert (len(x) == 3)
         L_flat = x[0]
@@ -616,8 +615,6 @@ class NAFAgent(AbstractDQNAgent):
     def __init__(self, V_model, L_model, mu_model, random_process=None,
                  covariance_mode='full', *args, **kwargs):
         super(NAFAgent, self).__init__(*args, **kwargs)
-
-        # TODO: Validate (important) input.
 
         # Parameters.
         self.random_process = random_process

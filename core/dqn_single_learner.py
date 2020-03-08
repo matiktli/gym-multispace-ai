@@ -13,7 +13,7 @@ from agent.runner import Runner
 scenario_path = 'scenario/single_scenario.py'
 env = create_env(scenario_path, is_absolute=True)
 # TMP presentation env-------- (single agent)
-env = create_single_env(scenario_path, is_absolute=True)
+# env = create_single_env(scenario_path, is_absolute=True)
 # ----------------------------
 initial_observation = env.reset()
 
@@ -34,4 +34,4 @@ for agent in env.agents:
 
 
 runner = Runner(env, dqn_agents)
-runner.start_learning()
+runner.start_learning(no_games=100, no_steps_per_game=100)
