@@ -10,7 +10,7 @@ from agent.dqn_agent import base_dqn_agent, DQNAgentSolver
 from agent.runner import Runner
 
 # Initialise gym-ai env
-scenario_path = 'scenario/single_scenario.py'
+scenario_path = 'scenario/defender_scenario.py'
 env = create_env(scenario_path, is_absolute=True)
 # ----------------------------
 initial_observation = env.reset()

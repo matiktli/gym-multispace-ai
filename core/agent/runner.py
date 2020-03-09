@@ -11,14 +11,9 @@ class Runner():
 
     def show_image_with_info(self, image, game_counter, step_counter, reward_n):
         if image is not None:
-            info_text = f'G: _{game_counter}_\nS: _{step_counter}_\nR: {reward_n}'
-            image = cv2.putText(image, info_text,
-                                (20,
-                                    20),
-                                cv2.FONT_HERSHEY_SIMPLEX,
-                                0.7,
-                                (255, 0, 255),
-                                2)
+            for i, info_text in enumerate([f'Game: _{game_counter}_', f'Step: _{step_counter}_', f'Reward(s): {reward_n}']):
+                image = cv2.putText(image, info_text, (2, 10+i*15),
+                                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 255), 2)
             cv2.imshow(Renderer.WINDOW_NAME, image)
             cv2.waitKey(1)
 
