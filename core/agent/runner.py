@@ -1,4 +1,6 @@
 import numpy as np
+import cv2
+from gym_multispace.renderer import Renderer
 
 
 class Runner():
@@ -7,15 +9,29 @@ class Runner():
         self.env = env
         self.agent_solvers = agent_solvers
 
-    def start_learning(self, no_games, no_steps_per_game):
+    def show_image_with_info(self, image, game_counter, step_counter, reward_n):
+        if image is not None:
+            info_text = f'G: _{game_counter}_\nS: _{step_counter}_\nR: {reward_n}'
+            image = cv2.putText(image, info_text,
+                                (20,
+                                    20),
+                                cv2.FONT_HERSHEY_SIMPLEX,
+                                0.7,
+                                (255, 0, 255),
+                                2)
+            cv2.imshow(Renderer.WINDOW_NAME, image)
+            cv2.waitKey(1)
+
+    def start_learning(self, no_games, no_steps_per_game, render_every_n_games=10):
         game_counter = 0
         while game_counter <= no_games:
             state_n = self.env.reset()
             step_counter = 0
-            # TODO we have bug with all games ending when ifrst ones ends
             is_game_done = False
+            show_img = False
+            if game_counter % render_every_n_games == 0:
+                show_img = True
             while step_counter <= no_steps_per_game and not is_game_done:
-                self.env.render()
                 action_n = []
                 for i, solver in enumerate(self.agent_solvers):
                     state_i = np.reshape(
@@ -26,6 +42,10 @@ class Runner():
                 observation_n_next, reward_n, done_n, info_n = self.env.step(
                     action_n)
 
+                if show_img:
+                    rendered_image = self.env.render(mode='terminal')
+                    self.show_image_with_info(
+                        rendered_image, game_counter, step_counter, reward_n)
                 for i, solver in enumerate(self.agent_solvers):
                     observation_next, reward, done, info = observation_n_next[
                         i], reward_n[i], done_n[i], info_n[i]
@@ -41,8 +61,9 @@ class Runner():
                 state_n = observation_n_next
                 step_counter += 1
             game_counter += 1
+            cv2.destroyAllWindows()
 
-    # def fit(self, env):
+        # def fit(self, env):
     #     run = 0
     #     while True:
     #         run += 1

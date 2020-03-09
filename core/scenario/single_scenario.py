@@ -39,9 +39,10 @@ class Scenario(BaseScenario):
     # reset callback function
     def reset_world(self, world):
         print('RESETING WORLD')
-        # Place attacker most left area
+        # Place attacker in the center
+        center_p = tuple([x / 2 for x in world.state.size])
         world.agents[0].state.pos = (
-            2, random.randrange(0, world.state.size[1]))
+            center_p[0], center_p[1])
 
         # Place goal in the right area
         world.special_objects[0].state.pos = (

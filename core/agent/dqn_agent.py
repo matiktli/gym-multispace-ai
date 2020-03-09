@@ -39,24 +39,27 @@ class DQNAgentSolver():
                  observation_space,
                  action_space,
                  model,
+                 exploration_rate=None,
                  memory_capacity=None,
-                 batch_size=None,
-                 exploration_rate=None):
+                 batch_size=None):
         self.model = model
         self.observation_space = observation_space
         self.action_space = action_space
         self.memory = deque(maxlen=memory_capacity)
         self.batch_size = batch_size
         self.exploration_rate = exploration_rate
+
+    def compile_model(self, learning_rate):
         self.model.compile(loss="mse", optimizer=Adam(
-            lr=DQNAgentSolver.LEARNING_RATE))
+            lr=learning_rate))
+        return self.model
 
     def add_to_memory(self, state, action, reward, next_state, done):
         self.memory.append((state, action, reward, next_state, done))
 
     def make_decission(self, state):
         # Add exploration parameter
-        if np.random.randint(1, 100)/100 < self.exploration_rate:
+        if np.random.rand() < self.exploration_rate:
             result = random.randrange(self.action_space)
         else:
             state = np.reshape(state, (1, 1, 4))  # TMP-todo remove
@@ -67,9 +70,9 @@ class DQNAgentSolver():
     def experience_replay(self):
         # Experience replay borowed from:
         # https://github.com/gsurma/cartpole/blob/master/cartpole.py
-        if len(self.memory) < DQNAgentSolver.BATCH_SIZE:
+        if len(self.memory) < self.batch_size:
             return
-        batch = random.sample(self.memory, DQNAgentSolver.BATCH_SIZE)
+        batch = random.sample(self.memory, self.batch_size)
         for state, action, reward, state_next, terminal in batch:
             state = np.reshape(state, (1, 1, 4))  # TMP-todo remove
             state_next = np.reshape(state_next, (1, 1, 4))  # TMP-todo remove
