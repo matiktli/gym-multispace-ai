@@ -10,7 +10,6 @@ class Runner():
     def start_learning(self, no_games, no_steps_per_game):
         game_counter = 0
         while game_counter <= no_games:
-            input(f'Game: {game_counter} ...')
             state_n = self.env.reset()
             step_counter = 0
             # TODO we have bug with all games ending when ifrst ones ends
