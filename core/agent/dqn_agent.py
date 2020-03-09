@@ -65,7 +65,7 @@ class DQNAgentSolver():
         return result
 
     def experience_replay(self):
-        # TODO implement experience replay
+        # Experience replay borowed from:
         # https://github.com/gsurma/cartpole/blob/master/cartpole.py
         if len(self.memory) < DQNAgentSolver.BATCH_SIZE:
             return
