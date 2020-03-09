@@ -66,6 +66,5 @@ class Scenario(BaseScenario):
 
     # done callback function
     def is_done(self, agent, world):
-        if world.step_counter > 100:
-            return True
+        # We are restricting number of steps in learner itself
         return False
