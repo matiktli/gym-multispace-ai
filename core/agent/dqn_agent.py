@@ -62,7 +62,7 @@ class DQNAgentSolver():
         if np.random.rand() < self.exploration_rate:
             result = random.randrange(self.action_space)
         else:
-            state = np.reshape(state, (1, 1, 4))  # TMP-todo remove
+            state = np.reshape(state, (1, 1, 6))  # TMP-todo remove
             q_values = self.model.predict(state)
             result = np.argmax(q_values[0])
         return result
@@ -74,8 +74,8 @@ class DQNAgentSolver():
             return
         batch = random.sample(self.memory, self.batch_size)
         for state, action, reward, state_next, terminal in batch:
-            state = np.reshape(state, (1, 1, 4))  # TMP-todo remove
-            state_next = np.reshape(state_next, (1, 1, 4))  # TMP-todo remove
+            state = np.reshape(state, (1, 1, 6))  # TMP-todo remove
+            state_next = np.reshape(state_next, (1, 1, 6))  # TMP-todo remove
             q_update = reward
             if not terminal:
                 q_update = (reward + DQNAgentSolver.GAMMA *

@@ -58,6 +58,10 @@ class Runner():
             game_counter += 1
             cv2.destroyAllWindows()
 
+    def save_weights(self, path):
+        # TODO save weights logic
+        pass
+
         # def fit(self, env):
     #     run = 0
     #     while True:

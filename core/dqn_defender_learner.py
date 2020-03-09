@@ -5,7 +5,7 @@ from gym_multispace.env_util import create_env
 
 
 # Local imports
-from model.dqn_model import base_dqn_model, base_2_dqn_model
+from model.dqn_model import base_dqn_model
 from agent.dqn_agent import base_dqn_agent, DQNAgentSolver
 from agent.runner import Runner
 
