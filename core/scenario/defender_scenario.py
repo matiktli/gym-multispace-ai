@@ -52,13 +52,15 @@ class Scenario(BaseScenario):
         center_p = tuple([x / 2 for x in world.state.size])
 
         # Place attacker most left area
-        world.agents[0].state.pos = (center_p[0], center_p[1])
+        world.agents[0].state.pos = (center_p[0], center_p[0])
 
         # Place deffender in the middle area
-        world.agents[1].state.pos = (center_p[0] + 2, center_p[1] + 2)
+        world.agents[1].state.pos = (
+            center_p[0], random.randrange(0, world.state.size[1]))
 
         # Place goal in the right area
-        world.special_objects[0].state.pos = world.state.size
+        world.special_objects[0].state.pos = (
+            world.state.size[0] - 2, random.randrange(0, world.state.size[1]))
 
     # reward callback function
     def get_reward(self, agent, world):
