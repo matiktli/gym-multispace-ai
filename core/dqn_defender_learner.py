@@ -35,7 +35,7 @@ for agent in env.agents:
 runner = Runner(env, dqn_agents)
 
 # start learning process
-runner.start_learning(no_games=1000, no_steps_per_game=250,render_every_n_games=100)
+runner.start_learning(no_games=700, no_steps_per_game=200,render_every_n_games=50)
 
 # save weights after training
 runner.save_weights('.test/def_0/weights')
