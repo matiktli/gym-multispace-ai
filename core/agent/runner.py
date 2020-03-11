@@ -1,6 +1,7 @@
 import numpy as np
 import cv2
 from gym_multispace.renderer import Renderer
+import imageio
 
 
 class Runner():
@@ -16,6 +17,7 @@ class Runner():
                                     cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 255), 2)
             cv2.imshow(Renderer.WINDOW_NAME, image)
             cv2.waitKey(1)
+        return image
 
     def start_learning(self, no_games, no_steps_per_game, render_every_n_games=10):
         game_counter = 0
@@ -26,6 +28,8 @@ class Runner():
             show_img = False
             if game_counter % render_every_n_games == 0:
                 show_img = True
+
+            replay_game_visual_storage = []
             while step_counter <= no_steps_per_game and not is_game_done:
                 action_n = []
                 for i, solver in enumerate(self.agent_solvers):
@@ -39,8 +43,13 @@ class Runner():
 
                 if show_img:
                     rendered_image = self.env.render(mode='terminal')
-                    self.show_image_with_info(
-                        rendered_image, game_counter, step_counter, reward_n)
+                    image_with_additional_stats = self.show_image_with_info(rendered_image,
+                                                                            game_counter,
+                                                                            step_counter,
+                                                                            reward_n)
+                    replay_game_visual_storage.append(
+                        image_with_additional_stats)
+
                 for i, solver in enumerate(self.agent_solvers):
                     observation_next, reward, done, info = observation_n_next[
                         i], reward_n[i], done_n[i], info_n[i]
@@ -55,12 +64,24 @@ class Runner():
 
                 state_n = observation_n_next
                 step_counter += 1
+            if len(replay_game_visual_storage) > 0:
+                self.save_replay_to_gif(
+                    replay_game_visual_storage, '.test/def_0/game_' + str(game_counter))
             game_counter += 1
             cv2.destroyAllWindows()
 
     def save_weights(self, path):
-        # TODO save weights logic
-        pass
+        if len(self.agent_solvers) > 1:
+            for agent, agent_solver in zip(self.env.world.objects_agents_ai, self.agent_solvers):
+                path_with_agent_name = path + '_' + agent.uuid
+                agent_solver.save_weights(path_with_agent_name)
+        else:
+            path_with_agent_name = path + '_' + \
+                self.env.world.objects_agents_ai.uuid
+            self.agent_solvers[0].save_weights(self, path_with_agent_name)
+
+    def save_replay_to_gif(self, replay_data, path):
+        imageio.mimsave(path + '.gif', replay_data)
 
         # def fit(self, env):
     #     run = 0

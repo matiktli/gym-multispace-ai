@@ -86,3 +86,6 @@ class DQNAgentSolver():
         self.exploration_rate *= DQNAgentSolver.EXPLORATION_DECAY
         self.exploration_rate = max(
             DQNAgentSolver.EXPLORATION_MIN, self.exploration_rate)
+
+    def save_weights(self, path):
+        self.model.save_weights(path + '.h5f')
