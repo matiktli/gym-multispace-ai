@@ -3,3 +3,4 @@
 .vscode/*
 *.egg-info/*
 *.h5f
+.test/*
