@@ -10,7 +10,7 @@ class Runner():
         self.env = env
         self.agent_solvers = agent_solvers
 
-    def show_image_with_info(self, image, game_counter, step_counter, reward_n):
+    def show_image_with_info(self, image, game_counter, step_counter, reward_n, path_to_save_gif=''):
         if image is not None:
             for i, info_text in enumerate([f'Game: _{game_counter}_', f'Step: _{step_counter}_', f'Reward(s): {reward_n}']):
                 image = cv2.putText(image, info_text, (2, 10+i*15),
@@ -19,7 +19,7 @@ class Runner():
             # cv2.waitKey(1)
         return image
 
-    def start_learning(self, no_games, no_steps_per_game, render_every_n_games=10):
+    def start_learning(self, no_games, no_steps_per_game, render_every_n_games=10, path_to_save_gif=''):
         game_counter = 0
         while game_counter <= no_games:
             state_n = self.env.reset()
@@ -49,7 +49,8 @@ class Runner():
                     image_with_additional_stats = self.show_image_with_info(rendered_image,
                                                                             game_counter,
                                                                             step_counter,
-                                                                            reward_n)
+                                                                            reward_n,
+                                                                            path_to_save_gif)
                     replay_game_visual_storage.append(
                         image_with_additional_stats)
 
@@ -69,7 +70,7 @@ class Runner():
                 step_counter += 1
             if len(replay_game_visual_storage) > 0:
                 self.save_replay_to_gif(
-                    replay_game_visual_storage, '.test/def_0/game_' + str(game_counter))
+                    replay_game_visual_storage, path_to_save_gif + '/game_' + str(game_counter))
             game_counter += 1
             cv2.destroyAllWindows()
 

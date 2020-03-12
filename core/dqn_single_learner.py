@@ -5,7 +5,7 @@ from gym_multispace.env_util import create_env
 
 
 # Local imports
-from model.dqn_model import base_dqn_model, base_2_dqn_model
+from model.dqn_model import base_dqn_model
 from agent.dqn_agent import base_dqn_agent, DQNAgentSolver
 from agent.runner import Runner
 
@@ -33,4 +33,8 @@ for agent in env.agents:
 
 
 runner = Runner(env, dqn_agents)
-runner.start_learning(no_games=100, no_steps_per_game=200)
+runner.start_learning(no_games=700, no_steps_per_game=150,
+                      render_every_n_games=50, path_to_save_gif='.test/sin_0')
+
+# save weights after training
+runner.save_weights('.test/sin_0/weights')
