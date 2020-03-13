@@ -34,7 +34,7 @@ for agent in env.agents:
 
 runner = Runner(env, dqn_agents)
 runner.start_learning(no_games=700, no_steps_per_game=150,
-                      render_every_n_games=50, path_to_save_gif='.test/sin_0')
+                      render_every_n_games=50, path_to_save_gif='.test/sin_1')
 
 # save weights after training
-runner.save_weights('.test/sin_0/weights')
+runner.save_weights('.test/sin_1/weights')

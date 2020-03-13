@@ -45,8 +45,8 @@ class Scenario(BaseScenario):
             center_p[0], center_p[1])
 
         # Place goal in the right area
-        world.special_objects[0].state.pos = (
-            world.state.size[0] - 2, random.randrange(0, world.state.size[1]))
+        world.special_objects[0].state.pos = (random.randrange(
+            0, world.state.size[0]), random.randrange(0, world.state.size[1]))
 
     # reward callback function
     def get_reward(self, agent, world):
