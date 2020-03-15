@@ -9,6 +9,7 @@ from keras.layers import Dense, Activation, Flatten
 
 
 def base_dqn_model(input_shape, output_shape):
+    print(f'Input shape: {input_shape}')
     input_shape = (1,) + input_shape
     model = Sequential()
     model.add(Flatten(input_shape=input_shape))

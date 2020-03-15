@@ -13,7 +13,7 @@ class Scenario(BaseScenario):
     def generate_world(self):
         print('GENERATING WORLD')
         world = World()
-        world.state.size = (50, 50)
+        world.state.size = (20, 20)
         world.is_reward_shared = False
         world.is_discrete = True
         world.agents = []
@@ -77,10 +77,7 @@ class Scenario(BaseScenario):
                                     image,
                                     1 - oppacity,
                                     0)
-
-        cv2.imshow('test', image)
-        cv2.waitKey(1)
-        input('...')
+        
         return image
 
     # done callback function

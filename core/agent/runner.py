@@ -34,7 +34,7 @@ class Runner():
                 action_n = []
                 for i, solver in enumerate(self.agent_solvers):
                     state_i = np.reshape(
-                        state_n[i], solver.observation_space[0])
+                        state_n[i], solver.observation_space)
                     action = solver.make_decission(state_i)
                     action_n.append(action)
 
@@ -61,7 +61,7 @@ class Runner():
                         is_game_done = True
 
                     state_i = np.reshape(
-                        state_n[i], solver.observation_space[0])
+                        state_n[i], solver.observation_space)
                     solver.add_to_memory(
                         state_i, action_n[i], reward, observation_next, done)
                     solver.experience_replay()
@@ -86,25 +86,3 @@ class Runner():
 
     def save_replay_to_gif(self, replay_data, path):
         imageio.mimsave(path + '.gif', replay_data)
-
-        # def fit(self, env):
-    #     run = 0
-    #     while True:
-    #         run += 1
-    #         state = env.reset()
-    #         state = np.reshape(state, [1, self.observation_space[0]])
-    #         step = 0
-    #         input('---Next game...')
-    #         is_game_done = False
-    #         while not is_game_done:
-    #             step += 1
-    #             env.render()
-    #             action = self.act(state)
-    #             observation_next, reward, done, info = env.step(action)
-    #             is_game_done = done
-    #             observation_next = np.reshape(
-    #                 observation_next, [1, self.observation_space[0]])
-    #             self.remember(state, action, reward,
-    #                           observation_next, done)
-    #             state = observation_next
-    #             self.experience_replay()
