@@ -11,7 +11,7 @@ class Scenario(BaseScenario):
     def generate_world(self):
         print('GENERATING WORLD')
         world = World()
-        world.state.size = (50, 50)
+        world.state.size = (20, 20)
         world.is_reward_shared = False
         world.is_discrete = True
         world.agents = []
@@ -22,8 +22,8 @@ class Scenario(BaseScenario):
         agent.can_grab = False
         agent.uuid = 'a_0_agent'
         agent.view_range = np.inf
-        agent.state.mass = 1
-        agent.state.size = 1
+        agent.state.mass = 3
+        agent.state.size = 2
         agent.color = 'red'
         world.agents.append(agent)
 
