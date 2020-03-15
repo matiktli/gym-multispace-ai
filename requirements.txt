@@ -16,7 +16,7 @@ google-auth-oauthlib==0.4.1
 google-pasta==0.1.8
 grpcio==1.25.0
 gym==0.15.6
--e git+https://github.com/matiktli/gym-mutlispace.git@34c4c49a929f9df5628058327d5727421d2bcfd2#egg=gym_multispace
+-e git+https://github.com/matiktli/gym-mutlispace.git@a23849ceb024a3458f9eb558a9abda6975c127b2#egg=gym_multispace
 -e git+https://github.com/matiktli/gym-pytemplate.git@bc431671540c14eca488825d8e144d0d82c63de8#egg=gym_pytemplate
 h5py==2.10.0
 idna==2.8
