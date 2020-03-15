@@ -81,7 +81,7 @@ class Runner():
                 agent_solver.save_weights(path_with_agent_name)
         else:
             path_with_agent_name = path + '_' + \
-                self.env.world.objects_agents_ai.uuid
+                self.env.world.objects_agents_ai[0].uuid
             self.agent_solvers[0].save_weights(self, path_with_agent_name)
 
     def save_replay_to_gif(self, replay_data, path):
