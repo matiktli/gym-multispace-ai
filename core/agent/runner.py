@@ -15,8 +15,6 @@ class Runner():
             for i, info_text in enumerate([f'Game: _{game_counter}_', f'Step: _{step_counter}_', f'Reward(s): {reward_n}']):
                 image = cv2.putText(image, info_text, (2, 10+i*15),
                                     cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 255), 2)
-            #cv2.imshow(Renderer.WINDOW_NAME, image)
-            # cv2.waitKey(1)
         return image
 
     def start_learning(self, no_games, no_steps_per_game, render_every_n_games=10, path_to_save_gif=''):

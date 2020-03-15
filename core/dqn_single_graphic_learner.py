@@ -37,4 +37,4 @@ runner.start_learning(no_games=700, no_steps_per_game=150,
                       render_every_n_games=50, path_to_save_gif='.test/sin_g_0')
 
 # save weights after training
-runner.save_weights('.test/sin_g_0/weights')
+runner.save_weights('.test/sin_g_0')
