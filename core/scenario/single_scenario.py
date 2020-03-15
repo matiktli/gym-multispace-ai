@@ -23,7 +23,7 @@ class Scenario(BaseScenario):
         agent.uuid = 'a_0_agent'
         agent.view_range = np.inf
         agent.state.mass = 3
-        agent.state.size = 2
+        agent.state.size = 1
         agent.color = 'red'
         world.agents.append(agent)
 
