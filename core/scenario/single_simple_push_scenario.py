@@ -33,6 +33,8 @@ class Scenario(BaseScenario):
         obj.uuid = f'o_0_object'
         obj.state.mass = 3
         obj.state.size = 1
+        target.can_be_moved = True
+        target.can_collide = True
         obj.color = 'green'
         world.special_objects.append(obj)
 
