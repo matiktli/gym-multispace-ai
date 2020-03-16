@@ -56,8 +56,8 @@ class Scenario(BaseScenario):
         center_p = tuple([x / 2 for x in world.state.size])
         picked_p_for_object = (random.randrange(buffer, world.state.size[0] - buffer),
                                random.randrange(buffer, world.state.size[1] - buffer))
-        picked_p_for_agent = (random.randrange(world.state.size[0] - buffer, world.state.size[0]),
-                              random.randrange(world.state.size[1] - buffer, world.state.size[1]))
+        picked_p_for_agent = (random.randrange(picked_p_for_object[0] - buffer, picked_p_for_object[0] + buffer),
+                              random.randrange(picked_p_for_object[1] - buffer, picked_p_for_object[1] + buffer))
 
         world.agents[0].state.pos = picked_p_for_agent
         world.special_objects[0].state.pos = picked_p_for_object
@@ -68,7 +68,8 @@ class Scenario(BaseScenario):
         if agent.uuid == 'a_0_agent':
             pushable_object = world.special_objects[0]
             target_area = world.special_objects[1]
-            distance = Equations.distance(pushable_object.state.pos, target_area.state.pos)
+            distance = Equations.distance(
+                pushable_object.state.pos, target_area.state.pos)
             # Agents get reward base on negative distance of object to target area
             # Also if distance if very close it gets imidiete boost
             # Using negative reward in order to populate q table with data faster
