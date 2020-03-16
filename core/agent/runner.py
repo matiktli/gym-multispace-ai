@@ -49,9 +49,9 @@ class Runner():
                                                                             step_counter,
                                                                             reward_n,
                                                                             path_to_save_gif)
-                    if image_with_additional_stats is not None:
-                        replay_game_visual_storage.append(
-                            image_with_additional_stats)
+
+                    replay_game_visual_storage.append(
+                        image_with_additional_stats)
 
                 for i, solver in enumerate(self.agent_solvers):
                     observation_next, reward, done, info = observation_n_next[
@@ -84,5 +84,5 @@ class Runner():
             self.agent_solvers[0].save_weights(path_with_agent_name)
 
     def save_replay_to_gif(self, replay_data, path):
-        if replay_data[0].any():
-            imageio.mimsave(path + '.gif', replay_data)
+        input('dasdasdasdas')
+        imageio.mimsave(path + '.gif', replay_data)
