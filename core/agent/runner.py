@@ -84,5 +84,4 @@ class Runner():
             self.agent_solvers[0].save_weights(path_with_agent_name)
 
     def save_replay_to_gif(self, replay_data, path):
-        input('dasdasdasdas')
         imageio.mimsave(path + '.gif', replay_data)
