@@ -74,7 +74,9 @@ class Scenario(BaseScenario):
             # Also if distance if very close it gets imidiete boost
             # Using negative reward in order to populate q table with data faster
             if distance < 0.2:
+                world.achieved_goal = True
                 return 100
+            world.achieved_goal = False
             return -distance
         else:
             raise Exception('Wrong agent definition')
@@ -92,4 +94,4 @@ class Scenario(BaseScenario):
     # done callback function
     def is_done(self, agent, world):
         # We are restricting number of steps in learner itself
-        return False
+        return world.achieved_goal
