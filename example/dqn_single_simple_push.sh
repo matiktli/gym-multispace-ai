@@ -2,7 +2,7 @@
 
 SCENARIO_PATH='../core/scenario/single_simple_push_scenario.py'
 NO_GAMES=3000
-NO_STEPS_PER_GAME=1000
+NO_STEPS_PER_GAME=700
 PATH_TO_SAVE='.test-results/single_push_0/'
 
 AGENT_EXPLORATION_RATE=0.2
