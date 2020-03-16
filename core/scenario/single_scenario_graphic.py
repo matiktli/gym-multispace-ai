@@ -1,4 +1,4 @@
-from gym_multispace.scenario import BaseScenario
+from gym_multispace.scenario import BaseScenario, ScenarioUtils
 from gym_multispace.core.entity import Agent, SpecialObject
 from gym_multispace.core.world import World
 from gym_multispace.renderer import Scaler, CircleVisualObject
@@ -63,7 +63,7 @@ class Scenario(BaseScenario):
     # observation callback function
     def get_observation(self, agent, world):
         print(f'GETTING OBS FOR AGENT: {agent.uuid}.')
-        image = self.get_graphical_observation(agent, world)
+        image = ScenarioUtils.get_graphical_observation(agent, world)
         return image
 
     # done callback function
