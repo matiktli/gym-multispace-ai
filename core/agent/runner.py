@@ -43,7 +43,7 @@ class Runner():
                     f"------ (Game: {game_counter}, Step: {step_counter})\n\tReward: {reward_n}\n\tObservation: {observation_n_next}\n\tInfo: {info_n}\n\tDone: {done_n}\n------")
 
                 if show_img:
-                    rendered_image = self.env.render(mode='human')
+                    rendered_image = self.env.render(mode='terminal')
                     image_with_additional_stats = self.show_image_with_info(rendered_image,
                                                                             game_counter,
                                                                             step_counter,
