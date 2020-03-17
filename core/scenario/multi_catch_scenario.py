@@ -59,7 +59,7 @@ class Scenario(BaseScenario):
                              random.randrange(buffer, world.state.size[1] - buffer))
 
         world.agents[0].state.pos = picked_p_for_hunter
-        world.agents[0].state.pos = picked_p_for_pray
+        world.agents[1].state.pos = picked_p_for_pray
         world.special_objects[0].state.pos = center_p
 
     # reward callback function
@@ -70,14 +70,16 @@ class Scenario(BaseScenario):
 
         if agent.uuid == 'a_0_hunter':
             if distance < (hunter.state.size + pray.state.size + 0.2):
-                world.achieved_goal = True
+                # leaving commented to let them experience this boost
+                # world.achieved_goal = True
                 return 100
             world.achieved_goal = False
             # Hunter receives reward base on negative distance ot the pray
             return -distance
         if agent.uuid == 'a_1_pray':
             if distance < (hunter.state.size + pray.state.size + 0.2):
-                world.achieved_goal = True
+                # leaving commented to let them experience this boost
+                # world.achieved_goal = True
                 return -100
             world.achieved_goal = False
             # Pray receives reward base on distance to hunter
