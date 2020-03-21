@@ -8,7 +8,7 @@ PATH_TO_SAVE='.test-results/v2/single_g_0/'
 AGENT_EXPLORATION_RATE=0.2
 AGENT_MEMORY_SIZE=1000000
 AGENT_BATCH_SIZE=25
-AGENT_LEARNING_RATE=0.001
+AGENT_LEARNING_RATE=0.00025
 
 python ../core/dqn_learner_wrapper.py \
     --scenario_path $SCENARIO_PATH \

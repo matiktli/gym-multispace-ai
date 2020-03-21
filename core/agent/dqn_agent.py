@@ -39,7 +39,7 @@ class DQNAgentSolver():
         if np.random.rand() < self.exploration_rate:
             result = random.randrange(self.action_space)
         else:
-            tmp = (1, 1) + state.shape
+            tmp = (1, ) + state.shape
             state = np.reshape(state, tmp)
             q_values = self.model.predict(state)
             result = np.argmax(q_values[0])
@@ -52,8 +52,8 @@ class DQNAgentSolver():
             return
         batch = random.sample(self.memory, self.batch_size)
         for state, action, reward, state_next, terminal in batch:
-            tmp_1 = (1, 1) + state.shape
-            tmp_2 = (1, 1) + state_next.shape
+            tmp_1 = (1,) + state.shape
+            tmp_2 = (1,) + state_next.shape
             state = np.reshape(state, tmp_1)
             state_next = np.reshape(state_next, tmp_2)
             q_update = reward
