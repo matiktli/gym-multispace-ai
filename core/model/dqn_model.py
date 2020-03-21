@@ -26,10 +26,8 @@ class Models():
     @staticmethod
     def _simple_dqn_model(input_shape, output_shape, learning_rate):
         print(f'Input shape: {input_shape}')
-        input_shape = (1,) + input_shape
         model = Sequential()
-        model.add(Flatten(input_shape=input_shape))
-        model.add(Dense(16, activation='sigmoid'))
+        model.add(Dense(16, input_shape=input_shape, activation='sigmoid'))
         model.add(Dense(output_shape, activation='linear'))
         model.compile(loss="mse", optimizer=Adam(
             lr=learning_rate))
@@ -39,10 +37,8 @@ class Models():
     @staticmethod
     def _base_dqn_model(input_shape, output_shape, learning_rate):
         print(f'Input shape: {input_shape}')
-        input_shape = (1,) + input_shape
         model = Sequential()
-        model.add(Flatten(input_shape=input_shape))
-        model.add(Dense(16, activation='relu'))
+        model.add(Dense(16, input_shape=input_shape, activation='relu'))
         model.add(Dense(16, activation='relu'))
         model.add(Dense(16, activation='relu'))
         model.add(Dense(output_shape, activation='linear'))
