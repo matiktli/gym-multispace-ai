@@ -1,8 +1,8 @@
 #!/bin/sh
 
 SCENARIO_PATH='../core/scenario/single_scenario_graphic.py'
-NO_GAMES=700
-NO_STEPS_PER_GAME=150
+NO_GAMES=2000
+NO_STEPS_PER_GAME=170
 PATH_TO_SAVE='.test-results/v2/single_g_0/'
 
 AGENT_EXPLORATION_RATE=0.2
