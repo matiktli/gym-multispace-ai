@@ -10,6 +10,9 @@ import cv2
 # Test scenario
 class Scenario(BaseScenario):
 
+    def __init__(self):
+        self.obs_world_shape = (250, 250, 3)
+
     def generate_world(self):
         print('GENERATING WORLD')
         world = World()
@@ -56,6 +59,10 @@ class Scenario(BaseScenario):
             # Attacker reward is based on distance to the target entity (negative reward)
             distance_to_goal = np.sqrt(
                 np.sum(np.square(agent.state.pos - world.special_objects[0].state.pos)))
+            if distance_to_goal < 0.2:
+                world.achieved_goal = True
+                return 100
+            world.achieved_goal = False
             return -distance_to_goal
         else:
             raise Exception('Wrong agent definition')
@@ -63,10 +70,10 @@ class Scenario(BaseScenario):
     # observation callback function
     def get_observation(self, agent, world):
         print(f'GETTING OBS FOR AGENT: {agent.uuid}.')
-        image = ScenarioUtils.get_graphical_observation(agent, world)
+        image = ScenarioUtils.get_graphical_observation(agent, world, self.obs_world_shape)
         return image
 
     # done callback function
     def is_done(self, agent, world):
         # We are restricting number of steps in learner itself
-        return False
+        return world.achieved_goal

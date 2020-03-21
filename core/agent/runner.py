@@ -40,7 +40,7 @@ class Runner():
                     action_n)
 
                 print(
-                    f"------ (Game: {game_counter}, Step: {step_counter})\n\tReward: {reward_n}\n\tObservation: {observation_n_next}\n\tInfo: {info_n}\n\tDone: {done_n}\n------")
+                    f"------ (Game: {game_counter}, Step: {step_counter})\n\tReward: {reward_n}\n\tObservation: {observation_n_next if len(str(observation_n_next)) < 50 else '...'}\n\tInfo: {info_n}\n\tDone: {done_n}\n------")
 
                 if show_img:
                     rendered_image = self.env.render(mode='terminal')

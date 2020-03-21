@@ -1,4 +1,3 @@
-from keras.optimizers import Adam
 from collections import deque
 import numpy as np
 import random
@@ -31,11 +30,6 @@ class DQNAgentSolver():
         self.memory = deque(maxlen=memory_capacity)
         self.batch_size = batch_size
         self.exploration_rate = exploration_rate
-
-    def compile_model(self, learning_rate):
-        self.model.compile(loss="mse", optimizer=Adam(
-            lr=learning_rate))
-        return self.model
 
     def add_to_memory(self, state, action, reward, next_state, done):
         self.memory.append((state, action, reward, next_state, done))

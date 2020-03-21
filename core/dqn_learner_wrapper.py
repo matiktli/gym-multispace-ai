@@ -4,7 +4,7 @@ import gym_multispace
 from gym_multispace.env_util import create_env
 
 # Local imports
-from model.dqn_model import base_dqn_model
+import model.dqn_model as models
 from agent.dqn_agent import DQNAgentSolver
 from agent.runner import Runner
 
@@ -23,7 +23,10 @@ parser.add_argument('--no_steps_per_game', type=int,
                     help='Number of steps that one game going to last.')
 parser.add_argument('--render_every_n_games', type=int,
                     default=100,
-                    help='Specify how often to render environment ')
+                    help='Specify how often to render environment.')
+parser.add_argument('--model_name', type=str,
+                    default='base_dqn_model',
+                    help='Specify if agents returns graphical observation.')
 parser.add_argument('--path_to_save_assets', type=str,
                     help='Path to where assets would be saved.')
 
@@ -45,6 +48,7 @@ args = parser.parse_args()
 scenario_path = args.scenario_path
 no_games = args.no_games
 no_steps_per_game = args.no_steps_per_game
+model_name = args.model_name
 render_every_n_games = args.render_every_n_games
 path_to_save_assets = args.path_to_save_assets
 if not os.path.exists(path_to_save_assets):
@@ -66,14 +70,13 @@ act_space_shape = env.action_space[0].n
 
 dqn_agents = []
 for agent in env.agents:
-    dqn_model = base_dqn_model(obs_space_shape, act_space_shape)
+    dqn_model = models.load_model_and_compile(model_name, obs_space_shape, act_space_shape, agent_learning_rate)
     dqn_agent_solver = DQNAgentSolver(obs_space_shape,
                                       act_space_shape,
                                       dqn_model,
                                       agent_exploration_rate,
                                       agent_memory_size,
                                       agent_batch_size)
-    dqn_agent_solver.compile_model(agent_learning_rate)
     dqn_agents.append(dqn_agent_solver)
 
 

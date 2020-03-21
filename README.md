@@ -15,7 +15,7 @@ Running simple DQN Agent. The reward in this scenario i s based on the distance 
 from gym_multispace.env_util import create_env
 
 # Local imports
-from model.dqn_model import base_dqn_model
+import model.dqn_model as models
 from agent.dqn_agent import base_dqn_agent, DQNAgentSolver
 from agent.runner import Runner
 
@@ -31,14 +31,13 @@ act_space_shape = env.action_space[0].n
 
 dqn_agents = []
 for agent in env.agents:
-    dqn_model = base_dqn_model(obs_space_shape, act_space_shape)
+    dqn_model = models.load_model('model_name', obs_space_shape, act_space_shape, learning_rate)
     dqn_agent_solver = DQNAgentSolver(obs_space_shape,
                                       act_space_shape,
                                       dqn_model,
                                       DQNAgentSolver.EXPLORATION_RATE,
                                       DQNAgentSolver.MEMORY_SIZE,
                                       DQNAgentSolver.BATCH_SIZE)
-    dqn_agent_solver.compile_model(DQNAgentSolver.LEARNING_RATE)
     dqn_agents.append(dqn_agent_solver)
 
 
