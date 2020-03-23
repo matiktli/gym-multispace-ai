@@ -3,7 +3,7 @@
 SCENARIO_PATH='../core/scenario/single_scenario_graphic.py'
 NO_GAMES=1200
 NO_STEPS_PER_GAME=150
-PATH_TO_SAVE='.test-results/v2/single_g_3/'
+PATH_TO_SAVE='.test-results/v2/single_g_4/'
 
 AGENT_EXPLORATION_RATE=0.2
 AGENT_MEMORY_SIZE=1000000
