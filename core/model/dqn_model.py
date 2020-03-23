@@ -77,3 +77,12 @@ class Models():
         print(model.summary())
         print(f'Input shape: {input_shape}')
         return model
+
+    # TODO define ddqn model:
+    # https://towardsdatascience.com/atari-reinforcement-learning-in-depth-part-1-ddqn-ceaa762a546f
+    @staticmethod
+    def _object_vision_double_dqn_model(input_shape, output_shape, learning_rate):
+        return None
+
+
+# TODO move to classes

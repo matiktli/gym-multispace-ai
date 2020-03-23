@@ -56,7 +56,7 @@ class Scenario(BaseScenario):
             # Attacker reward is based on distance to the target entity (negative reward)
             distance_to_goal = np.sqrt(
                 np.sum(np.square(agent.state.pos - world.special_objects[0].state.pos)))
-            if distance_to_goal < 0.2:
+            if distance_to_goal < 1:
                 world.achieved_goal = True
                 return 100
             world.achieved_goal = False
