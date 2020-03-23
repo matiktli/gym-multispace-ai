@@ -64,7 +64,7 @@ class Models():
                                subsample=(2, 2),
                                activation='relu')(conv_1)
         conv_flattened = keras.layers.core.Flatten()(conv_2)
-        hidden = Dense(256, activation='relu')(conv_flattened)
+        hidden = Dense(256, activation='linear')(conv_flattened)
         output = Dense(output_shape)(hidden)
         # filtered_output = keras.layers.merge.Multiply()([output, actions_mask])
 

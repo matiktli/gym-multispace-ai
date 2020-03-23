@@ -10,9 +10,6 @@ import cv2
 # Test scenario
 class Scenario(BaseScenario):
 
-    def __init__(self):
-        self.obs_world_shape = (250, 250, 3)
-
     def generate_world(self):
         print('GENERATING WORLD')
         world = World()
