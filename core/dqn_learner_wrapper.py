@@ -70,7 +70,8 @@ act_space_shape = env.action_space[0].n
 
 dqn_agents = []
 for agent in env.agents:
-    dqn_model = models.load_model_and_compile(model_name, obs_space_shape, act_space_shape, agent_learning_rate)
+    dqn_model = models.load_model_and_compile(
+        model_name, obs_space_shape, act_space_shape, agent_learning_rate)
     dqn_agent_solver = DQNAgentSolver(obs_space_shape,
                                       act_space_shape,
                                       dqn_model,
