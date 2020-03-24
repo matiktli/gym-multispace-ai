@@ -1,56 +1,18 @@
-from keras.models import Sequential
-from keras.layers import Dense, Activation, Flatten, Input, Lambda
-import keras
-from keras.layers.convolutional import Convolution2D
+from model import BaseModel
+
 from keras.models import Model
-from keras.optimizers import Adam, RMSprop
+from keras.optimizers import RMSprop
+from keras.layers import Dense, Input, Lambda
+from keras.layers.convolutional import Convolution2D
+from keras.layers.core import Flatten
 
 
-"""
-    @input_shape = observation_space_shape,
-    @output_shape = action_space_shape
-"""
+# Inspired by: https://becominghuman.ai/lets-build-an-atari-ai-part-1-dqn-df57e8ff3b26
+class DQN(BaseModel):
 
-
-def load_model_and_compile(model_name, input_shape, output_shape, learning_rate):
-    models = Models()
-    model_fnc = getattr(models, '_' + model_name)
-    return model_fnc(input_shape, output_shape, learning_rate)
-
-
-class Models():
-
-    def __init__(self):
-        pass
-
-    @staticmethod
-    def _simple_dqn_model(input_shape, output_shape, learning_rate):
-        print(f'Input shape: {input_shape}')
-        model = Sequential()
-        model.add(Dense(16, input_shape=input_shape, activation='sigmoid'))
-        model.add(Dense(output_shape, activation='linear'))
-        model.compile(loss="mse", optimizer=Adam(
-            lr=learning_rate))
-        print(f'Input shape: {input_shape}')
-        return model
-
-    @staticmethod
-    def _base_dqn_model(input_shape, output_shape, learning_rate):
-        print(f'Input shape: {input_shape}')
-        model = Sequential()
-        model.add(Dense(16, input_shape=input_shape, activation='relu'))
-        model.add(Dense(16, activation='relu'))
-        model.add(Dense(16, activation='relu'))
-        model.add(Dense(output_shape, activation='linear'))
-        model.compile(loss="mse", optimizer=Adam(
-            lr=learning_rate))
-        print(model.summary())
-        print(f'Input shape: {input_shape}')
-        return model
-
-    # Inspired by: https://becominghuman.ai/lets-build-an-atari-ai-part-1-dqn-df57e8ff3b26
-    @staticmethod
-    def _object_vision_dqn_model(input_shape, output_shape, learning_rate):
+    def __init__(self, input_shape, output_shape, learning_rate):
+        BaseModel.__init__(self, input_shape, output_shape)
+        self.learning_rate = learning_rate
         print(f'Input shape: {input_shape}')
         obs_input = Input(input_shape, name='observations')
         # actions_mask = Input((output_shape,), name='action_masks')
@@ -63,26 +25,18 @@ class Models():
         conv_2 = Convolution2D(32, 4, 4,
                                subsample=(2, 2),
                                activation='relu')(conv_1)
-        conv_flattened = keras.layers.core.Flatten()(conv_2)
+        conv_flattened = Flatten()(conv_2)
         hidden = Dense(256, activation='linear')(conv_flattened)
         output = Dense(output_shape)(hidden)
         # filtered_output = keras.layers.merge.Multiply()([output, actions_mask])
 
-        model = Model(input=obs_input,
-                      output=output)
-        optimizer = RMSprop(learning_rate=learning_rate,
+        self.model = Model(input=obs_input,
+                           output=output)
+
+        # Compile model
+        optimizer = RMSprop(learning_rate=self.learning_rate,
                             rho=0.95, epsilon=0.01)
-        model.compile(optimizer, loss='mse')
-
-        print(model.summary())
-        print(f'Input shape: {input_shape}')
-        return model
-
-    # TODO define ddqn model:
-    # https://towardsdatascience.com/atari-reinforcement-learning-in-depth-part-1-ddqn-ceaa762a546f
-    @staticmethod
-    def _object_vision_double_dqn_model(input_shape, output_shape, learning_rate):
-        return None
-
-
-# TODO move to classes
+        self.model.compile(optimizer=optimizer,
+                           loss='mse',
+                           metrics=['acc'])
+        print(self.model.summary())
