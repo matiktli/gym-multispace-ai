@@ -1,5 +1,4 @@
-from model import BaseModel
-
+from model.base_model import BaseModel
 from keras.models import Model
 from keras.optimizers import Adam
 from keras.layers import Dense, Input, Lambda
@@ -18,13 +17,12 @@ class DDQN(BaseModel):
         self.learning_rate = learning_rate
 
         obs_input = Input(input_shape, name='observations')
-        normalized = Lambda(lambda x: x / 255.0)(obs_input)
 
         conv_1 = Convolution2D(filters=32,
                                kernel_size=(8, 8),
                                strides=(4, 4),
                                padding='valid',
-                               activation='relu')(normalized)
+                               activation='relu')(obs_input)
         conv_2 = Convolution2D(filters=64,
                                kernel_size=(4, 4),
                                strides=(2, 2),
@@ -38,7 +36,7 @@ class DDQN(BaseModel):
 
         conv_flattened = Flatten()(conv_3)
 
-        hidden = Dense(256, activation='linear')(conv_flattened)
+        hidden = Dense(512, activation='linear')(conv_flattened)
 
         output = Dense(output_shape)(hidden)
 
