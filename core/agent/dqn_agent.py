@@ -1,10 +1,11 @@
 from collections import deque
 import numpy as np
 import random
+from agent.base_agent import BaseAgent
 
 
 # Custom implementation
-class DQNAgentSolver():
+class DQNAgentSolver(BaseAgent):
 
     MEMORY_SIZE = 1000000
     BATCH_SIZE = 25
@@ -20,11 +21,11 @@ class DQNAgentSolver():
     def __init__(self,
                  observation_space,
                  action_space,
-                 model,
+                 model_wrapper,
                  exploration_rate=None,
                  memory_capacity=None,
                  batch_size=None):
-        self.model = model
+        self.model_wrapper = model_wrapper
         self.observation_space = observation_space
         self.action_space = action_space
         self.memory = deque(maxlen=memory_capacity)
@@ -41,7 +42,7 @@ class DQNAgentSolver():
         else:
             state = np.expand_dims(np.asarray(
                 state).astype(np.float64), axis=0)
-            q_values = self.model.predict(state, batch_size=1)
+            q_values = self.model_wrapper.model.predict(state, batch_size=1)
             result = np.argmax(q_values[0])
         return result
 
@@ -61,10 +62,10 @@ class DQNAgentSolver():
             q_update = reward
             if not terminal:
                 q_update = (reward + DQNAgentSolver.GAMMA *
-                            np.amax(self.model.predict(state_next)[0]))
-            q_values = self.model.predict(state)
+                            np.amax(self.model_wrapper.model.predict(state_next)[0]))
+            q_values = self.model_wrapper.model.predict(state)
             q_values[0][action] = q_update
-            self.model.fit(state, q_values, verbose=0)
+            self.model_wrapper.model.fit(state, q_values, verbose=0)
         self.exploration_rate *= DQNAgentSolver.EXPLORATION_DECAY
         self.exploration_rate = max(
             DQNAgentSolver.EXPLORATION_MIN, self.exploration_rate)

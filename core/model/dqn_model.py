@@ -1,5 +1,4 @@
-from model import BaseModel
-
+from model.base_model import BaseModel
 from keras.models import Model
 from keras.optimizers import RMSprop
 from keras.layers import Dense, Input, Lambda

@@ -18,5 +18,4 @@ python ../core/dqn_learner_wrapper.py \
     --agent_exploration_rate $AGENT_EXPLORATION_RATE \
     --agent_memory_size $AGENT_MEMORY_SIZE \
     --agent_batch_size $AGENT_BATCH_SIZE \
-    --agent_learning_rate $AGENT_LEARNING_RATE \
-    --model_name 'base_dqn_model'
+    --agent_learning_rate $AGENT_LEARNING_RATE
