@@ -17,7 +17,9 @@ class DDQNAgentSolver(BaseAgent):
     GAMMA = 0.99
     LEARNING_RATE = 0.0001
     LEARN_START = 10
-    TARGET_MODEL_UPDATE_RATE = 500
+
+    TRAIN_FREQ = 4
+    UPDATE_TARGET_FREQ = 10
 
     EXPLORATION_MIN = 0.01
     EXPLORATION_DECAY = 0.995
@@ -31,7 +33,8 @@ class DDQNAgentSolver(BaseAgent):
                  memory_capacity=None,
                  batch_size=None,
                  target_model_update_freq=None,
-                 train_freq=4):
+                 train_freq=4,
+                 no_steps_per_game=200):
         self.model_wrapper = model_wrapper
         self.target_model_wrapper = target_model_wrapper
         self.observation_space = observation_space
@@ -41,7 +44,7 @@ class DDQNAgentSolver(BaseAgent):
         self.epsilon = DDQNAgentSolver.EPSILON
         self.epsilon_min = DDQNAgentSolver.EPSILON_MIN
         self.exploration = LinearSchedule(
-            schedule_timesteps=int(self.exploration_rate * int(1e7)),
+            schedule_timesteps=int(self.exploration_rate * no_steps_per_game),
             initial_p=self.epsilon,
             final_p=self.epsilon_min
         )
@@ -52,7 +55,7 @@ class DDQNAgentSolver(BaseAgent):
 
         self._update_target_model()
 
-    def add_to_memory(self, state, action, reward, next_state, done):
+    def remember(self, state, action, reward, next_state, done):
         self.replay_buffer.add(state, action, reward, next_state, done)
 
     def make_decission(self, state):
@@ -64,9 +67,8 @@ class DDQNAgentSolver(BaseAgent):
             result = np.argmax(q_values[0])
         return result
 
+    # https://github.com/hridayns/Research-Project-on-Reinforcement-learning/blob/06b1de576a0820b680d8481cbae85db6fccdf804/Atari/models/DDQN.py#L109
     def experience_replay(self):
-        # TODO learning
-        # https://github.com/hridayns/Research-Project-on-Reinforcement-learning/blob/06b1de576a0820b680d8481cbae85db6fccdf804/Atari/models/DDQN.py#L109
         if self.replay_buffer.fill < self.batch_size:
             return
 
@@ -94,24 +96,23 @@ class DDQNAgentSolver(BaseAgent):
 
     def save_weights(self, path):
         assert self.model_wrapper, self.target_model_wrapper
-        self.model_wrapper.save_model_weights(path + '_local.h5f')
-        self.target_model_wrapper.save_model_weights(path + '_target.h5f')
+        self.model_wrapper.save_model_weights(path + '__local.h5f')
+        self.target_model_wrapper.save_model_weights(path + '__target.h5f')
 
     def _update_target_model(self):
         assert self.model_wrapper, self.target_model_wrapper
         local_model_weights = self.model_wrapper.model.get_weights()
         self.target_model_wrapper.model.set_weights(local_model_weights)
 
-    def _update_exploration(self, t):
+    def update_exploration(self, t):
         self.epsilon = self.exploration.value(t)
 
     def step_update(self, t):
         hist = None
-
-        if t <= self.learn_start:
+        if t <= DDQNAgentSolver.LEARN_START:
             return hist
-        if t % self.train_freq == 0:
+        if t % DDQNAgentSolver.TRAIN_FREQ == 0:
             hist = self.experience_replay()
-        if t % self.target_network_update_freq == 0:
+        if t % DDQNAgentSolver.UPDATE_TARGET_FREQ == 0:
             self._update_target_model()
         return hist

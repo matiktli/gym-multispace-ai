@@ -11,7 +11,6 @@ class Scenario(BaseScenario):
     def generate_world(self):
         print('GENERATING WORLD')
         world = World()
-        world.state.size = (20, 20)
         world.is_reward_shared = False
         world.is_discrete = True
         world.agents = []
@@ -60,7 +59,6 @@ class Scenario(BaseScenario):
 
     # observation callback function
     def get_observation(self, agent, world):
-        print(f'GETTING OBS FOR AGENT: {agent.uuid}.')
         # Simple observation of all agents position
         obs = [ag.state.pos for ag in world.objects_all]
         return np.concatenate(obs)

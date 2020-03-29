@@ -13,7 +13,6 @@ class Scenario(BaseScenario):
     def generate_world(self):
         print('GENERATING WORLD')
         world = World()
-        world.state.size = (20, 20)
         world.is_reward_shared = False
         world.is_discrete = True
         world.agents = []
@@ -66,7 +65,6 @@ class Scenario(BaseScenario):
 
     # observation callback function
     def get_observation(self, agent, world):
-        print(f'GETTING OBS FOR AGENT: {agent.uuid}.')
         image = ScenarioUtils.get_graphical_observation(agent, world, self.obs_world_shape)
         return image
 

@@ -6,7 +6,7 @@ from gym_multispace.env_util import create_env
 # Local imports
 import model.ddqn_model as nn
 from agent.ddqn_agent import DDQNAgentSolver
-from agent.dqn_runner import Runner
+from agent.ddqn_runner import Runner
 from utils.argument_parser import get_arguments_for_ddqn
 
 # Other imports
@@ -17,7 +17,9 @@ args = get_arguments_for_ddqn()
 scenario_path = args.scenario_path
 no_games = args.no_games
 no_steps_per_game = args.no_steps_per_game
-render_every_n_games = args.render_every_n_games
+save_replay_every_n_games = args.save_replay_every_n_games
+save_weights_every_n_games = args.save_weights_every_n_games
+
 path_to_save_assets = args.path_to_save_assets
 if not os.path.exists(path_to_save_assets):
     os.makedirs(path_to_save_assets)
@@ -50,15 +52,17 @@ for agent in env.agents:
                                         target_ddqn_model_wrapper,
                                         agent_exploration_rate,
                                         agent_memory_size,
-                                        agent_batch_size)
+                                        agent_batch_size,
+                                        target_model_update_freq=no_steps_per_game,
+                                        train_freq=4,
+                                        no_steps_per_game=no_steps_per_game)
     ddqn_agents.append(ddqn_agent_solver)
 
 
-runner = Runner(env, ddqn_agents)
+runner = Runner(env, ddqn_agents, path_to_save_assets,
+                save_replay_every_n_games, save_weights_every_n_games)
 runner.start_learning(no_games=no_games,
-                      no_steps_per_game=no_steps_per_game,
-                      render_every_n_games=render_every_n_games,
-                      path_to_save_gif=path_to_save_assets)
+                      no_steps_per_game=no_steps_per_game)
 
 # save weights after training
 runner.save_weights(path_to_save_assets)

@@ -10,9 +10,12 @@ def get_arguments_for_ddqn():
                         help='Number of games to play')
     parser.add_argument('--no_steps_per_game', type=int,
                         help='Number of steps that one game going to last.')
-    parser.add_argument('--render_every_n_games', type=int,
-                        default=100,
-                        help='Specify how often to render environment.')
+    parser.add_argument('--save_replay_every_n_games', type=int,
+                        default=200,
+                        help='Specify how often to save game replay.')
+    parser.add_argument('--save_weights_every_n_games', type=int,
+                        default=200,
+                        help='Specify how often to save game weights.')
     parser.add_argument('--path_to_save_assets', type=str,
                         help='Path to where assets would be saved.')
 

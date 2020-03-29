@@ -89,7 +89,6 @@ class Scenario(BaseScenario):
 
     # observation callback function
     def get_observation(self, agent, world):
-        print(f'GETTING OBS FOR AGENT: {agent.uuid}.')
         # Simple observation of all agents position
         obs = []
         for obj in world.objects_all:
