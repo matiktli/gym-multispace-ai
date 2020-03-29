@@ -60,7 +60,7 @@ for agent in env.agents:
 
 
 runner = Runner(env, ddqn_agents, path_to_save_assets,
-                save_replay_every_n_games, save_weights_every_n_games)
+                save_weights_every_n_games, save_replay_every_n_games)
 runner.start_learning(no_games=no_games,
                       no_steps_per_game=no_steps_per_game)
 
