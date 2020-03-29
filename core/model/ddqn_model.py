@@ -43,7 +43,7 @@ class DDQN(BaseModel):
         self.model = Model(input=obs_input,
                            output=output)
         # Compile model
-        optimizer = Adam(lr=self.learning_rate, rho=0.95, epsilon=0.01)
+        optimizer = Adam(lr=self.learning_rate)
         self.model.compile(optimizer=optimizer,
                            loss=tf.losses.huber_loss,
                            metrics=['acc'])

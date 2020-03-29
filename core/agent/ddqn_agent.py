@@ -1,7 +1,7 @@
-from collections import deque
 import numpy as np
 import random
-from agent import BaseAgent, LinearSchedule
+from agent.base_agent import BaseAgent, LinearSchedule
+from agent.replay_buffer import ReplayBuffer
 
 
 # Custom implementation
@@ -16,6 +16,7 @@ class DDQNAgentSolver(BaseAgent):
 
     GAMMA = 0.99
     LEARNING_RATE = 0.0001
+    LEARN_START = 10
     TARGET_MODEL_UPDATE_RATE = 500
 
     EXPLORATION_MIN = 0.01
@@ -35,8 +36,7 @@ class DDQNAgentSolver(BaseAgent):
         self.target_model_wrapper = target_model_wrapper
         self.observation_space = observation_space
         self.action_space = action_space
-        self.memory = deque(maxlen=memory_capacity)
-        self.batch_size = batch_size
+
         self.exploration_rate = exploration_rate
         self.epsilon = DDQNAgentSolver.EPSILON
         self.epsilon_min = DDQNAgentSolver.EPSILON_MIN
@@ -46,8 +46,14 @@ class DDQNAgentSolver(BaseAgent):
             final_p=self.epsilon_min
         )
 
+        self.replay_buffer = ReplayBuffer(
+            memory_capacity, observation_space, action_space)
+        self.batch_size = batch_size
+
+        self._update_target_model()
+
     def add_to_memory(self, state, action, reward, next_state, done):
-        self.memory.append((state, action, reward, next_state, done))
+        self.replay_buffer.add(state, action, reward, next_state, done)
 
     def make_decission(self, state):
         if np.random.rand() < self.epsilon:
@@ -59,8 +65,32 @@ class DDQNAgentSolver(BaseAgent):
         return result
 
     def experience_replay(self):
-        # TODO
-        pass
+        # TODO learning
+        # https://github.com/hridayns/Research-Project-on-Reinforcement-learning/blob/06b1de576a0820b680d8481cbae85db6fccdf804/Atari/models/DDQN.py#L109
+        if self.replay_buffer.fill < self.batch_size:
+            return
+
+        state_batch, action_batch, reward_batch, next_state_batch, done_batch = self.replay_buffer.get_batch(
+            self.batch_size)
+        target = self.model_wrapper.model.predict(
+            state_batch.astype(float) / 255, batch_size=self.batch_size)
+
+        done_mask = done_batch.ravel()
+        undone_mask = np.invert(done_batch).ravel()
+
+        target[done_mask, action_batch[done_mask].ravel(
+        )] = reward_batch[done_mask].ravel()
+
+        Q_target = self.target_model_wrapper.model.predict(
+            next_state_batch.astype(float)/255, batch_size=self.batch_size)
+        Q_future = np.max(Q_target[undone_mask], axis=1)
+
+        target[undone_mask, action_batch[undone_mask].ravel(
+        )] = reward_batch[undone_mask].ravel() + DDQNAgentSolver.GAMMA * Q_future
+
+        hist = self.model_wrapper.model.fit(state_batch.astype(
+            float)/255, target, batch_size=self.batch_size, verbose=0).history
+        return hist
 
     def save_weights(self, path):
         assert self.model_wrapper, self.target_model_wrapper
@@ -69,8 +99,19 @@ class DDQNAgentSolver(BaseAgent):
 
     def _update_target_model(self):
         assert self.model_wrapper, self.target_model_wrapper
-        local_model_weights = self.model_wrapper.get_weights()
+        local_model_weights = self.model_wrapper.model.get_weights()
         self.target_model_wrapper.model.set_weights(local_model_weights)
 
     def _update_exploration(self, t):
         self.epsilon = self.exploration.value(t)
+
+    def step_update(self, t):
+        hist = None
+
+        if t <= self.learn_start:
+            return hist
+        if t % self.train_freq == 0:
+            hist = self.experience_replay()
+        if t % self.target_network_update_freq == 0:
+            self._update_target_model()
+        return hist

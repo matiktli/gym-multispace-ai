@@ -17,7 +17,6 @@ args = get_arguments_for_ddqn()
 scenario_path = args.scenario_path
 no_games = args.no_games
 no_steps_per_game = args.no_steps_per_game
-model_name = args.model_name
 render_every_n_games = args.render_every_n_games
 path_to_save_assets = args.path_to_save_assets
 if not os.path.exists(path_to_save_assets):

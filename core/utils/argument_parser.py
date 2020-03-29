@@ -25,4 +25,4 @@ def get_arguments_for_ddqn():
                         help='Agent`s batch size.')
     parser.add_argument('--agent_learning_rate', type=float,
                         help='Agent`s learning rate.')
-    return parser
+    return parser.parse_args()
