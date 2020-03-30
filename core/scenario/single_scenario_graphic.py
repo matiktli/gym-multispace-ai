@@ -2,6 +2,7 @@ from gym_multispace.scenario import BaseScenario, ScenarioUtils
 from gym_multispace.core.entity import Agent, SpecialObject
 from gym_multispace.core.world import World
 from gym_multispace.renderer import Scaler, CircleVisualObject
+from collections import deque
 import numpy as np
 import random
 import cv2
@@ -9,6 +10,10 @@ import cv2
 
 # Test scenario
 class Scenario(BaseScenario):
+
+    def __init__(self):
+        super().__init__()
+        self.short_term_memory = deque(maxlen=1)
 
     def generate_world(self):
         print('GENERATING WORLD')
@@ -49,23 +54,33 @@ class Scenario(BaseScenario):
         world.special_objects[0].state.pos = (random.randrange(
             0, world.state.size[0]), random.randrange(0, world.state.size[1]))
 
+        world.achieved_goal = False
+
     # reward callback function
     def get_reward(self, agent, world):
-        if agent.uuid == 'a_0_agent':
-            # Attacker reward is based on distance to the target entity (negative reward)
-            distance_to_goal = np.sqrt(
-                np.sum(np.square(agent.state.pos - world.special_objects[0].state.pos)))
-            if distance_to_goal < 1:
-                world.achieved_goal = True
-                return 100
-            world.achieved_goal = False
-            return -distance_to_goal
+        reward = 0
+        assert self.short_term_memory is not None
+        distance_to_goal = np.sqrt(
+            np.sum(np.square(agent.state.pos - world.special_objects[0].state.pos)))
+        if len(self.short_term_memory) == 0:
+            reward = 0
         else:
-            raise Exception('Wrong agent definition')
+            prev_memory = self.short_term_memory.pop()
+            prev_distance = prev_memory['distance']
+            if distance_to_goal < prev_distance:
+                reward = +1
+            else:
+                reward = -1
+        if distance_to_goal < agent.state.size:
+            world.achieved_goal = True
+        self.short_term_memory.append(
+            {'agent_pos': agent.state.pos, 'target_pos': world.special_objects[0].state.pos, 'distance': distance_to_goal})
+        return reward
 
     # observation callback function
     def get_observation(self, agent, world):
-        image = ScenarioUtils.get_graphical_observation(agent, world, self.obs_world_shape)
+        image = ScenarioUtils.get_graphical_observation(
+            agent, world, self.obs_world_shape)
         return image
 
     # done callback function
