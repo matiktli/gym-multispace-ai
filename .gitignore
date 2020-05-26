@@ -4,3 +4,4 @@
 *.egg-info/*
 *.h5f
 /.test/*
+*.png

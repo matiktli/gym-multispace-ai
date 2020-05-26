@@ -46,9 +46,9 @@ class DQNAgentSolver(BaseAgent):
             result = np.argmax(q_values[0])
         return result
 
+    # Experience replay borowed from:
+    # https://github.com/gsurma/cartpole/blob/master/cartpole.py
     def experience_replay(self):
-        # Experience replay borowed from:
-        # https://github.com/gsurma/cartpole/blob/master/cartpole.py
         if len(self.memory) < self.batch_size:
             return
         batch = random.sample(self.memory, self.batch_size)

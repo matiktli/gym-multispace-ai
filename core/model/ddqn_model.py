@@ -33,13 +33,9 @@ class DDQN(BaseModel):
                                strides=(1, 1),
                                padding='valid',
                                activation='relu')(conv_2)
-
         conv_flattened = Flatten()(conv_3)
-
         hidden = Dense(512, activation='linear')(conv_flattened)
-
         output = Dense(output_shape)(hidden)
-
         self.model = Model(input=obs_input,
                            output=output)
         # Compile model

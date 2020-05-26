@@ -14,8 +14,6 @@ class DQN(BaseModel):
         self.learning_rate = learning_rate
         print(f'Input shape: {input_shape}')
         obs_input = Input(input_shape, name='observations')
-        # actions_mask = Input((output_shape,), name='action_masks')
-
         normalized = Lambda(lambda x: x / 255.0)(obs_input)
 
         conv_1 = Convolution2D(16, 8, 8,
@@ -33,8 +31,7 @@ class DQN(BaseModel):
                            output=output)
 
         # Compile model
-        optimizer = RMSprop(learning_rate=self.learning_rate,
-                            rho=0.95, epsilon=0.01)
+        optimizer = RMSprop(learning_rate=self.learning_rate, epsilon=0.01)
         self.model.compile(optimizer=optimizer,
                            loss='mse',
                            metrics=['acc'])

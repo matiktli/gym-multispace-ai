@@ -1,7 +1,8 @@
-from gym_multispace.scenario import BaseScenario
+from gym_multispace.scenario import BaseScenario, ScenarioUtils
 from gym_multispace.core.entity import Agent, SpecialObject
 from gym_multispace.core.world import World
 from gym_multispace.core.world_engine import Equations
+from collections import deque
 import numpy as np
 import random
 
@@ -9,10 +10,13 @@ import random
 # Test scenario
 class Scenario(BaseScenario):
 
+    def __init__(self):
+        super().__init__()
+        self.short_term_memory = deque(maxlen=1)
+
     def generate_world(self):
         print('GENERATING WORLD')
         world = World()
-        world.state.size = (20, 20)
         world.is_reward_shared = False
         world.is_discrete = True
         world.agents = []
@@ -23,7 +27,7 @@ class Scenario(BaseScenario):
         hunter.can_grab = False
         hunter.uuid = 'a_0_hunter'
         hunter.view_range = np.inf
-        hunter.state.mass = 3
+        hunter.state.mass = 1
         hunter.state.size = 1
         hunter.color = 'blue'
         world.agents.append(hunter)
@@ -33,8 +37,8 @@ class Scenario(BaseScenario):
         pray.can_grab = False
         pray.uuid = 'a_1_pray'
         pray.view_range = np.inf
-        pray.state.mass = 5
-        pray.state.size = 1
+        pray.state.mass = 3
+        pray.state.size = 1.5
         pray.color = 'red'
         world.agents.append(pray)
 
@@ -61,38 +65,38 @@ class Scenario(BaseScenario):
         world.agents[0].state.pos = picked_p_for_hunter
         world.agents[1].state.pos = picked_p_for_pray
         world.special_objects[0].state.pos = center_p
+        world.achieved_goal = False
 
     # reward callback function
+    # reward callback function
     def get_reward(self, agent, world):
-        hunter = world.agents[0]
-        pray = world.agents[1]
-        distance = Equations.distance(hunter.state.pos, pray.state.pos)
-
-        if agent.uuid == 'a_0_hunter':
-            if distance < (hunter.state.size + pray.state.size + 0.2):
-                # leaving commented to let them experience this boost
-                # world.achieved_goal = True
-                return 100
-            world.achieved_goal = False
-            # Hunter receives reward base on negative distance ot the pray
-            return -distance
-        if agent.uuid == 'a_1_pray':
-            if distance < (hunter.state.size + pray.state.size + 0.2):
-                # leaving commented to let them experience this boost
-                # world.achieved_goal = True
-                return -100
-            world.achieved_goal = False
-            # Pray receives reward base on distance to hunter
-            return distance
+        reward = 0
+        cur_distance_between = np.sqrt(
+            np.sum(np.square(world.agents[0].state.pos - world.agents[1].state.pos)))
+        if len(self.short_term_memory) == 0:
+            reward = 0
         else:
-            raise Exception('Wrong agent definition')
+            prev_memory = self.short_term_memory.pop()
+            prev_distance = prev_memory['distance']
+            if distance_between < prev_distance:
+                reward = +1
+            else:
+                reward = -1
+        if distance_between < agent.state.size:
+            world.achieved_goal = True
+        self.short_term_memory.append(
+            {'distance': distance_between})
+
+        if agent.uuid == 'a_1_pray':
+            # If you are a prey your reward is negated
+            reward *= -1
+        return reward
 
     # observation callback function
     def get_observation(self, agent, world):
-        obs_pos = [ag.state.pos for ag in world.objects_all]
-        obs_vel = [ag.state.vel for ag in world.objects_all]
-        obs_mass = [ag.state.mass for ag in world.objects_all]
-        return np.concatenate((obs_pos, obs_vel, obs_mass))
+        image = ScenarioUtils.get_graphical_observation(
+            agent, world, self.obs_world_shape)
+        return image
 
     # done callback function
     def is_done(self, agent, world):

@@ -60,8 +60,10 @@ class Scenario(BaseScenario):
     # observation callback function
     def get_observation(self, agent, world):
         # Simple observation of all agents position
-        obs = [ag.state.pos for ag in world.objects_all]
-        return np.concatenate(obs)
+        obs_pos = [ag.state.pos for ag in world.objects_all]
+        obs_vel = [ag.state.vel for ag in world.objects_all]
+        obs_mass = [ (ag.state.mass,0) for ag in world.objects_all]
+        return np.concatenate((obs_pos, obs_vel, obs_mass))
 
     # done callback function
     def is_done(self, agent, world):

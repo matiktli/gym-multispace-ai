@@ -7,7 +7,7 @@ from agent.replay_buffer import ReplayBuffer
 # Custom implementation
 class DDQNAgentSolver(BaseAgent):
 
-    MEMORY_SIZE = 10000
+    MEMORY_SIZE = 300000
     BATCH_SIZE = 32
 
     EXPLORATION_RATE = 0.1
@@ -19,7 +19,7 @@ class DDQNAgentSolver(BaseAgent):
     LEARN_START = MEMORY_SIZE
 
     TRAIN_FREQ = 4
-    UPDATE_TARGET_FREQ = 500
+    UPDATE_TARGET_FREQ = 5000
 
     EXPLORATION_MIN = 0.01
     EXPLORATION_DECAY = 0.995
