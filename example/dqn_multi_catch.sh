@@ -1,14 +1,16 @@
 #!/bin/sh
 
 SCENARIO_PATH='../core/scenario/multi_catch_scenario.py'
-NO_GAMES=30000
-NO_STEPS_PER_GAME=500
-PATH_TO_SAVE='.test-results/multi_catch_0/'
+NO_GAMES=1500
+NO_STEPS_PER_GAME=400
+PATH_TO_SAVE='.test-results/v6/multi_catch_1/'
 
-AGENT_EXPLORATION_RATE=0.2
-AGENT_MEMORY_SIZE=10000
+AGENT_EXPLORATION_RATE=0.1
+AGENT_MEMORY_SIZE=500000
 AGENT_BATCH_SIZE=32
 AGENT_LEARNING_RATE=0.001
+
+RENDER_RATE=50
 
 python ../core/dqn_learner_wrapper.py \
     --scenario_path $SCENARIO_PATH \
@@ -18,4 +20,5 @@ python ../core/dqn_learner_wrapper.py \
     --agent_exploration_rate $AGENT_EXPLORATION_RATE \
     --agent_memory_size $AGENT_MEMORY_SIZE \
     --agent_batch_size $AGENT_BATCH_SIZE \
-    --agent_learning_rate $AGENT_LEARNING_RATE
+    --agent_learning_rate $AGENT_LEARNING_RATE \
+    --render_every_n_games $RENDER_RATE

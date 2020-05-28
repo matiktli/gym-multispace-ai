@@ -4,6 +4,7 @@ from abc import abstractmethod
 class BaseAgent():
 
     def __init__(self):
+        self.is_learning = True
         pass
 
     @abstractmethod

@@ -23,7 +23,7 @@ class Scenario(BaseScenario):
         agent.view_range = np.inf
         agent.state.mass = 3
         agent.state.size = 1
-        agent.color = 'red'
+        agent.color = 'blue'
         world.agents.append(agent)
 
         # Setup objective in world
@@ -31,7 +31,17 @@ class Scenario(BaseScenario):
         goal.uuid = f'o_0_goal'
         goal.state.mass = 1
         goal.state.size = 1
+        goal.color = 'green'
         world.special_objects.append(goal)
+
+        # create 4obstacles that builds a wall
+        for i in range(0, 7):
+            wall_part_obj = SpecialObject()
+            wall_part_obj.uuid = f'o_{i}_wall'
+            wall_part_obj.state.mass = 1
+            wall_part_obj.state.size = 1
+            wall_part_obj.color = 'red'
+            world.special_objects.append(wall_part_obj)
 
         return world
 
@@ -40,19 +50,39 @@ class Scenario(BaseScenario):
         print('RESETING WORLD')
         # Place attacker in the center
         center_p = tuple([x / 2 for x in world.state.size])
-        world.agents[0].state.pos = (
-            center_p[0], center_p[1])
+        world.agents[0].state.pos = (np.random.randint(
+            4, world.state.size[0]/2-4), np.random.randint(4, world.state.size[1]/2-4))
 
-        # Place goal in the right area
-        world.special_objects[0].state.pos = (random.randrange(
-            0, world.state.size[0]), random.randrange(0, world.state.size[1]))
+        wall_positions = [(1.5*x + 6, world.state.size[1]/2)
+                          for x in range(0, len(world.special_objects)-1)]
+        counter = 0
+        for sp_obj in world.special_objects:
+            if 'wall' in sp_obj.uuid:
+                sp_obj.state.pos = wall_positions[counter]
+                counter += 1
+            else:
+                sp_obj.state.pos = (np.random.randint(
+                    world.state.size[0]/2+4, world.state.size[0]-4), np.random.randint(world.state.size[1]/2+4, world.state.size[1]-4))
 
     # reward callback function
     def get_reward(self, agent, world):
         if agent.uuid == 'a_0_agent':
             # Attacker reward is based on distance to the target entity (negative reward)
+            target = world.get_object_by_name('o_0_goal')
             distance_to_goal = np.sqrt(
-                np.sum(np.square(agent.state.pos - world.special_objects[0].state.pos)))
+                np.sum(np.square(agent.state.pos - target.state.pos)))
+            if distance_to_goal < 2:
+                # Just special state to place agent on top of object if close enough
+                if target.state.pos[0] + 1.5 < agent.state.pos[0]:
+                    return +100
+                return + 50
+
+            for sp_obj in world.special_objects:
+                if 'wall' in sp_obj.uuid:
+                    distance_to_wall_part = np.sqrt(
+                        np.sum(np.square(agent.state.pos - sp_obj.state.pos)))
+                    if distance_to_wall_part < 2:
+                        return -100
             return -distance_to_goal
         else:
             raise Exception('Wrong agent definition')
@@ -60,10 +90,17 @@ class Scenario(BaseScenario):
     # observation callback function
     def get_observation(self, agent, world):
         # Simple observation of all agents position
-        obs_pos = [ag.state.pos for ag in world.objects_all]
-        obs_vel = [ag.state.vel for ag in world.objects_all]
-        obs_mass = [ (ag.state.mass,0) for ag in world.objects_all]
-        return np.concatenate((obs_pos, obs_vel, obs_mass))
+        observation_per_agent = []
+        for obj in world.objects_all:
+            entity_obs = []
+            entity_obs.append(obj.state.pos[0])
+            entity_obs.append(obj.state.pos[1])
+            entity_obs.append(obj.state.vel[0])
+            entity_obs.append(obj.state.vel[1])
+            entity_obs.append(obj.state.mass)
+            entity_obs.append(obj.state.size)
+            observation_per_agent.append(entity_obs)
+        return np.concatenate(observation_per_agent)
 
     # done callback function
     def is_done(self, agent, world):

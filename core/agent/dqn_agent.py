@@ -15,14 +15,13 @@ class DQNAgentSolver(BaseAgent):
     GAMMA = 0.95
     LEARNING_RATE = 0.001
 
-    EXPLORATION_MIN = 0.01
-    EXPLORATION_DECAY = 0.995
+    EXPLORATION_MIN, EXPLORATION_MAX, EXPLORATION_DECAY = 0.01, 1.0, 0.997
 
     def __init__(self,
                  observation_space,
                  action_space,
                  model_wrapper,
-                 exploration_rate=None,
+                 exploration_rate=1.0,
                  memory_capacity=None,
                  batch_size=None):
         self.model_wrapper = model_wrapper
@@ -30,7 +29,8 @@ class DQNAgentSolver(BaseAgent):
         self.action_space = action_space
         self.memory = deque(maxlen=memory_capacity)
         self.batch_size = batch_size
-        self.exploration_rate = exploration_rate
+        self.exploration_rate = 1.0
+        self.is_learning = True
 
     def add_to_memory(self, state, action, reward, next_state, done):
         self.memory.append((state, action, reward, next_state, done))
@@ -39,16 +39,21 @@ class DQNAgentSolver(BaseAgent):
         # Add exploration parameter
         if np.random.rand() < self.exploration_rate:
             result = random.randrange(self.action_space)
+            print(f'Making random decision to use: {result}')
         else:
             state = np.expand_dims(np.asarray(
                 state).astype(np.float64), axis=0)
+            print(f'state: {state}')
             q_values = self.model_wrapper.model.predict(state, batch_size=1)
             result = np.argmax(q_values[0])
+            print(f'Making Q decision to use: {result}, from {q_values}')
         return result
 
     # Experience replay borowed from:
     # https://github.com/gsurma/cartpole/blob/master/cartpole.py
     def experience_replay(self):
+        if not self.is_learning:
+            return
         if len(self.memory) < self.batch_size:
             return
         batch = random.sample(self.memory, self.batch_size)
@@ -71,4 +76,6 @@ class DQNAgentSolver(BaseAgent):
             DQNAgentSolver.EXPLORATION_MIN, self.exploration_rate)
 
     def save_weights(self, path):
-        self.model.save_weights(path + '.h5f')
+        if not self.is_learning:
+            return
+        self.model_wrapper.model.save_weights(path + '.h5f')

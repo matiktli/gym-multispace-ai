@@ -2,6 +2,7 @@ import numpy as np
 import cv2
 from gym_multispace.renderer import Renderer
 import imageio
+from agent.data_service import DataService
 
 
 class Runner():
@@ -18,6 +19,7 @@ class Runner():
         return image
 
     def start_learning(self, no_games, no_steps_per_game, render_every_n_games=10, path_to_save_gif=''):
+        self.data_service = DataService(path_to_save_gif)
         game_counter = 0
         while game_counter <= no_games:
             state_n = self.env.reset()
@@ -28,6 +30,7 @@ class Runner():
                 show_img = True
 
             replay_game_visual_storage = []
+            self.data_service.open_game_stream(game_counter)
             while step_counter <= no_steps_per_game and not is_game_done:
                 action_n = []
                 for i, solver in enumerate(self.agent_solvers):
@@ -38,9 +41,13 @@ class Runner():
 
                 observation_n_next, reward_n, done_n, info_n = self.env.step(
                     action_n)
+                self.__perform_additional_action_on_info(info_n, game_counter)
 
+                if step_counter % 5 == 0:
+                    self.data_service.put_to_game_stream(
+                        game_counter, step_counter, obs=observation_n_next, rew=reward_n)
                 print(
-                    f"------ (Game: {game_counter}, Step: {step_counter})\n\tReward: {reward_n}\n\tObservation: {observation_n_next if len(str(observation_n_next)) < 50 else '...'}\n\tInfo: {info_n}\n\tDone: {done_n}\n------")
+                    f"------ (Game: {game_counter}, Step: {step_counter})\n\tReward: {reward_n}\n\tObservation: {observation_n_next if len(str(observation_n_next)) < 100 else '...'}\n\tInfo: {info_n}\n\tDone: {done_n}\n------")
 
                 if show_img:
                     rendered_image = self.env.render(mode='terminal')
@@ -70,18 +77,30 @@ class Runner():
             if len(replay_game_visual_storage) > 0:
                 self.save_replay_to_gif(
                     replay_game_visual_storage, path_to_save_gif + '/game_' + str(game_counter))
+                self.save_weights(path_to_save_gif, suffix=f'_g{game_counter}')
+            self.data_service.close_game_stream(game_counter)
             game_counter += 1
             cv2.destroyAllWindows()
 
-    def save_weights(self, path):
+    def save_weights(self, path, suffix=''):
         if len(self.agent_solvers) > 1:
             for agent, agent_solver in zip(self.env.world.objects_agents_ai, self.agent_solvers):
-                path_with_agent_name = path + '_' + agent.uuid
+                path_with_agent_name = path + '_' + agent.uuid + suffix
                 agent_solver.save_weights(path_with_agent_name)
         else:
             path_with_agent_name = path + '_' + \
-                self.env.world.objects_agents_ai[0].uuid
+                self.env.world.objects_agents_ai[0].uuid + suffix
             self.agent_solvers[0].save_weights(path_with_agent_name)
 
     def save_replay_to_gif(self, replay_data, path):
         imageio.mimsave(path + '.gif', replay_data)
+
+    def __perform_additional_action_on_info(self, info_n, game_counter):
+        for i, info in enumerate(info_n):
+            agent_solver = self.agent_solvers[i]
+            if info == 'STOP_LEARNING':
+                agent_solver.is_learning = False
+
+        # WARNING !!!!
+        if len(self.agent_solvers) > 1 and game_counter == 300 and self.agent_solvers[1].is_learning:
+            self.agent_solvers[1].is_learning = False

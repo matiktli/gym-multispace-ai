@@ -17,6 +17,7 @@ class Scenario(BaseScenario):
         world.is_discrete = True
         world.agents = []
         world.special_objects = []
+        world.achieved_goal = False
 
         # Agent that gonna be a hunter and need to catch the pray
         hunter = Agent()
@@ -35,7 +36,7 @@ class Scenario(BaseScenario):
         pray.view_range = np.inf
         pray.state.mass = 5
         pray.state.size = 1
-        pray.color = 'red'
+        pray.color = 'green'
         world.agents.append(pray)
 
         # Obstacle object
@@ -43,7 +44,7 @@ class Scenario(BaseScenario):
         obstacle.uuid = f'o_0_obstacle'
         obstacle.state.mass = 1
         obstacle.state.size = 2
-        obstacle.color = 'green'
+        obstacle.color = 'red'
         world.special_objects.append(obstacle)
 
         return world
@@ -89,12 +90,22 @@ class Scenario(BaseScenario):
 
     # observation callback function
     def get_observation(self, agent, world):
-        obs_pos = [ag.state.pos for ag in world.objects_all]
-        obs_vel = [ag.state.vel for ag in world.objects_all]
-        obs_mass = [ag.state.mass for ag in world.objects_all]
-        return np.concatenate((obs_pos, obs_vel, obs_mass))
+        observation_per_agent = []
+        for obj in world.objects_all:
+            entity_obs = []
+            entity_obs.append(obj.state.pos[0])
+            entity_obs.append(obj.state.pos[1])
+            entity_obs.append(obj.state.vel[0])
+            entity_obs.append(obj.state.vel[1])
+            entity_obs.append(obj.state.mass)
+            entity_obs.append(obj.state.size)
+            observation_per_agent.append(entity_obs)
+        return np.concatenate(observation_per_agent)
 
     # done callback function
     def is_done(self, agent, world):
         # We are restricting number of steps in learner itself
         return world.achieved_goal
+
+    def get_info(self, agent, world):
+        return ''
