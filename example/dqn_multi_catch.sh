@@ -3,10 +3,10 @@
 SCENARIO_PATH='../core/scenario/multi_catch_scenario.py'
 NO_GAMES=1500
 NO_STEPS_PER_GAME=400
-PATH_TO_SAVE='.test-results/v6/multi_catch_1/'
+PATH_TO_SAVE='.test-results/v7/multi_catch_1/'
 
 AGENT_EXPLORATION_RATE=0.1
-AGENT_MEMORY_SIZE=500000
+AGENT_MEMORY_SIZE=50000
 AGENT_BATCH_SIZE=32
 AGENT_LEARNING_RATE=0.001
 

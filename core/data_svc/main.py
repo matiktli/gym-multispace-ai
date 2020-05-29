@@ -3,6 +3,8 @@ import csv
 import numpy as np
 from os import listdir
 import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
+
 
 class GameData():
 
@@ -17,11 +19,6 @@ class GameData():
             result += float(row[1])
         return result
 
-    # Not for all
-    def get_start_distance(self):
-        agent_pos = np.array([float(self.data[0][2]), float(self.data[0][3])])
-        target_pos = np.array([float(self.data[0][8]), float(self.data[0][9])])
-        return np.sqrt(np.sum(np.square(agent_pos - target_pos)))
 
 
 class DataLoader():
@@ -44,7 +41,7 @@ class DataLoader():
                 game_datas.append(game_data)
             elif f[-3:] == 'gif':
                 continue
-        
+
         game_datas.sort(key=lambda x: x.game_no)
         return game_datas, gif_datas
 
@@ -76,7 +73,7 @@ class DataInterpreter():
         self.games = games
         self.games_len = len(games)
 
-    def plot(self, factor=100):
+    def plot(self, factor=100, experiment_desc={}):
         game_nos = list()
         game_rews = list()
 
@@ -85,10 +82,36 @@ class DataInterpreter():
             tmp_rews += game_data.get_reward_sum()
             if i % factor == 0 and i != 0:
                 game_nos.append(game_data.game_no)
-                game_rews.append(tmp_rews)
-                tmp_rews=0
+                game_rews.append(tmp_rews/factor)
+                tmp_rews = 0
 
         plt.plot(game_nos, game_rews, 'r')
+        plt.xlabel('Episode no.')
+        plt.ylabel(f'Avg reward from {factor} games')
+        plt.suptitle(
+            f'Experiment with {experiment_desc["NO_STEPS_PER_GAME"]} steps per game')
+
+        trend = np.polyfit(game_nos, game_rews, 1)
+        trend_func = np.poly1d(trend)
+        plt.plot(game_nos, trend_func(game_nos), "g--")
+
+        main_func_info = mpatches.Patch(color='red',
+            label=f'DQN Agent rewards')
+        reward_trend_info = mpatches.Patch(color='green',
+                                           label=f'Reward(progress) trend')
+        agent_mem_size_info = mpatches.Patch(color='grey',
+            label=f'Mem size: {experiment_desc["AGENT_MEMORY_SIZE"]}')
+        agent_batch_size_info = mpatches.Patch(color='grey',
+            label=f'Batch size: {experiment_desc["AGENT_BATCH_SIZE"]}')
+        agent_learning_rate_info = mpatches.Patch(color='grey',
+            label=f'Learning rate: {experiment_desc["AGENT_LEARNING_RATE"]}')
+        activation_info = mpatches.Patch(color='grey',
+                                         label=f'Activation: {experiment_desc["ACTIVATION"] if "ACTIVATION" in experiment_desc  else "RELU"}')
+        network_layers = mpatches.Patch(color='grey',
+                                        label=f'Layers: {experiment_desc["NETWORK"] if "NETWORK" in experiment_desc else "24x24"}')
+
+        plt.legend(handles=[main_func_info, reward_trend_info, agent_mem_size_info,
+                            agent_batch_size_info, agent_learning_rate_info, activation_info, network_layers])
         plt.show()
 
     def __get_avarage_reward_every_x_games(self, factor):

@@ -39,7 +39,6 @@ class DQN(BaseModel):
         # print(self.model.summary())
         
         
-        
         # self.model = Sequential()
         # self.model.add(Dense(24, input_shape=input_shape, activation="relu"))
         # self.model.add(Dense(24, activation="relu"))
@@ -47,10 +46,17 @@ class DQN(BaseModel):
         # self.model.compile(loss="mse", optimizer=Adam(lr=self.learning_rate))
         # print(self.model.summary())
 
+        # self.model = Sequential()
+        # self.model.add(Dense(24, input_shape=input_shape, activation="tanh"))
+        # self.model.add(Dense(48, activation="tanh"))
+        # self.model.add(Dense(output_shape, activation="linear"))
+        # self.model.compile(loss="mse", optimizer=Adam(
+        #     learning_rate=self.learning_rate, decay=0.01))
+        # print(self.model.summary())
+
         self.model = Sequential()
-        self.model.add(Dense(24, input_shape=input_shape, activation="tanh"))
-        self.model.add(Dense(48, activation="tanh"))
+        self.model.add(Dense(24, input_shape=input_shape, activation="relu"))
+        self.model.add(Dense(24, activation="relu"))
         self.model.add(Dense(output_shape, activation="linear"))
-        self.model.compile(loss="mse", optimizer=Adam(
-            learning_rate=self.learning_rate, decay=0.01))
+        self.model.compile(loss="mse", optimizer=Adam(lr=self.learning_rate))
         print(self.model.summary())

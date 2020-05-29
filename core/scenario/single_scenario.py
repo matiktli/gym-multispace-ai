@@ -97,8 +97,8 @@ class Scenario(BaseScenario):
             entity_obs.append(obj.state.pos[1])
             entity_obs.append(obj.state.vel[0])
             entity_obs.append(obj.state.vel[1])
-            entity_obs.append(obj.state.mass)
-            entity_obs.append(obj.state.size)
+            # entity_obs.append(obj.state.mass)
+            # entity_obs.append(obj.state.size)
             observation_per_agent.append(entity_obs)
         return np.concatenate(observation_per_agent)
 
